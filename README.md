@@ -9,13 +9,17 @@ Playing around with AI to generate this Chat application.
 
 - Make sure you have Node.js installed
 
-Then run
+- Make sure to use the correct Node version. In this project we use `fnm` to switch between versions, and [follow the shell setup](https://github.com/Schniz/fnm#shell-setup) to automatically switch to the project's Node version.
+
+- Then run:
+
+
 ```
 npm i
 ```
 
 ```
-node server.js
+npm run start
 ```
 
 - navigate to http://localhost:3000
