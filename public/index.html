@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Chat Application</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+    <h1>Chat Application</h1>
+    <h4 id="connected-user"></h4>
+
+    <div id="chat-container">
+        <div>
+            <div id="user-list-container">
+                <h3>Users</h3>
+                <ul id="user-list"></ul>
+            </div>
+        </div>
+        <div>
+            <ul id="chat-messages"></ul>
+        </div>
+        <div id="message-container">
+            <input type="text" id="message" placeholder="Enter your message">
+            <button id="send">Send</button>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        const connectedUser = document.getElementById('connected-user');
+        const userList = document.getElementById('user-list');
+        const chatMessages = document.getElementById('chat-messages');
+        const messageInput = document.getElementById('message');
+        const sendButton = document.getElementById('send');
+
+        sendButton.addEventListener('click', () => {
+            const message = messageInput.value;
+            socket.emit('chat-message', message);
+            messageInput.value = '';
+        });
+
+        socket.on('user-list', (users) => {
+            userList.innerHTML = '';
+            users.forEach((user) => {
+                const li = document.createElement('li');
+                li.textContent = user;
+                userList.appendChild(li);
+            });
+        });
+
+        socket.on('chat-message', (data) => {
+            if (!data || !data.message) {
+                alert('Nothing to send...');
+                return;
+            }
+            const message = `${data.username}: ${data.message}`;
+            const li = document.createElement('li');
+            li.textContent = message;
+            chatMessages.appendChild(li);
+        });
+
+        const username = prompt('Enter your username:');
+        socket.emit('register', username);
+        connectedUser.innerText = `Chat away, ${username}!`;
+    </script>
+</body>
+
+</html>
